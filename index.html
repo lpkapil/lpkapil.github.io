@@ -40,16 +40,16 @@
         .falling-byte {
             position: absolute;
             color: #00ff00;
-            font-size: 16px;
+            font-size: 12px; /* Reduced font size */
             opacity: 0.8;
             white-space: nowrap;
             z-index: 9999;
             user-select: none;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
-
     <pre>
         ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡠⢤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
         ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡴⠟⠃⠀⠀⠙⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -82,21 +82,29 @@
     </div>
 
     <script>
-        // Create falling byte code effect
         const characters = ['0', '1', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '.', ',', ';', ':', '#', '@', '$', '%', '&', '*', '!', '?'];
 
+        const maxFallingBytes = 50; // Limit the number of falling characters at any time
+        let fallingBytesCount = 0;
+
         function createFallingByte() {
+            if (fallingBytesCount >= maxFallingBytes) {
+                return; // Don't create more bytes if we reached the limit
+            }
+
             const byte = document.createElement('div');
             byte.classList.add('falling-byte');
             byte.textContent = characters[Math.floor(Math.random() * characters.length)];
             byte.style.left = Math.random() * window.innerWidth + 'px'; // Random horizontal position
             byte.style.animation = `fall ${Math.random() * 5 + 3}s linear infinite`; // Random animation duration
-            
-            document.body.appendChild(byte);
 
-            // Remove the falling byte after animation ends
+            document.body.appendChild(byte);
+            fallingBytesCount++;
+
+            // Remove the falling byte after animation ends and decrease the count
             byte.addEventListener('animationend', () => {
                 byte.remove();
+                fallingBytesCount--;
             });
         }
 
@@ -116,8 +124,8 @@
         `;
         document.head.appendChild(styleSheet);
 
-        // Create falling bytes every 100ms
-        setInterval(createFallingByte, 100);
+        // Create falling bytes every 200ms
+        setInterval(createFallingByte, 200); // Increased interval for fewer bytes
     </script>
 
 </body>
